@@ -26,6 +26,7 @@ const formSchema = mongoose.Schema({
 		required: true,
 		trim: true,
 	},
+	isProcessed: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('form', formSchema);
