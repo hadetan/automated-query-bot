@@ -23,7 +23,6 @@ const formSchema = mongoose.Schema({
 	},
 	message: {
 		type: String,
-		required: true,
 		trim: true,
 	},
 	isProcessed: { type: Boolean, default: false },
