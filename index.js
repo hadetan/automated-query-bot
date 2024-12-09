@@ -1,6 +1,7 @@
+//#region 
 const express = require('express');
 const { success } = require('./src/utils/responseWrapper');
-const { PORT, RECIPIENTGROUP } = require('./src/configs');
+const { PORT } = require('./src/configs');
 const dbConnect = require('./src/configs/dbConnect');
 const morgan = require('morgan');
 const mainRouter = require('./src/routers/index');
@@ -9,6 +10,7 @@ const cors = require('cors');
 const corsConfig = require('./src/configs/corsConfig');
 const sendDataService = require('./src/services/sendData.service');
 const { initializeClient } = require('./src/services/whatsappClient.service');
+//#endregion
 
 const app = express();
 
@@ -31,11 +33,19 @@ app.listen(PORT, () => {
 //Connecting with database.
 dbConnect;
 
-// Initialize WhatsApp Client ->
-initializeClient();
-
 /* Calling for service */
 
-setInterval(() => {
-	sendDataService()
-}, 10000);
+let isProcessing = false;
+
+setInterval(async () => {
+	// Initialize WhatsApp Client ->
+	await initializeClient();
+
+	if (isProcessing) return;
+	isProcessing = true;
+	try {
+		await sendDataService();
+	} finally {
+		isProcessing = false;
+	}
+}, 24 * 60 * 60 * 1000);

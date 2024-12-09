@@ -79,7 +79,7 @@ ${server url}/api/v1
 
 ### MongoDB
 
-### Schema
+#### Schema
 
 - `user`: Email (required), Password (required), Name (required), forms. [Referred to `form`]
 - `form`: Publisher [Referred to `user`], name (required), phone (required), email (required), course (required), message, isProcessed {Boolean: Default: false}.

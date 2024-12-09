@@ -7,7 +7,6 @@ const createFormController = async (req, res) => {
 
 	const { name, phone, email, course, message } = req.body;
 	const userId = req._id;
-	const messageFormat = /^.{10,}$/;
 	const phoneFormat = /^.{10,}$/;
 
 	if (!name) {
@@ -20,14 +19,6 @@ const createFormController = async (req, res) => {
 
 	if (!course) {
 		return res.send(error(400, 'Course name is required'));
-	}
-
-	if (!message) {
-		return res.send(error(400, 'Message is required'));
-	}
-
-	if (!messageFormat.test(message)) {
-		return res.send(error(400, 'Message must be 10 characters in length.'));
 	}
 
 	if (!phoneFormat.test(phone)) {
@@ -45,9 +36,9 @@ const createFormController = async (req, res) => {
 				publisher: req._id,
 				name,
 				phone,
-				email,
+				email: email || 'EMPTY',
 				course,
-				message,
+				message: message || 'EMPTY',
 			});
 
 			await user.forms.push(form._id);
@@ -59,9 +50,9 @@ const createFormController = async (req, res) => {
 		const form = await Form.create({
 			name,
 			phone,
-			email,
+			email: email || 'EMPTY',
 			course,
-			message,
+			message: message || 'EMPTY',
 		});
 
 		return res.send(success(201, { form }));

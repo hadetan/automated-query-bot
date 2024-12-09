@@ -5,6 +5,11 @@ const { SCOPES, RECIPIENTNUMBER } = require('../configs/index.js');
 const googleSheetService = require('./googleSheet.service.js');
 const serialNumberService = require('./serialNumber.service.js');
 const { messageToWhatsapp } = require('./whatsappClient.service.js');
+const { default: mongoose } = require('mongoose');
+const { Mutex } = require('async-mutex');
+
+// Doppelganger effect handle
+const mutex = new Mutex();
 
 //#region Google authentication
 
@@ -20,7 +25,15 @@ const sheets = google.sheets({ version: 'v4', auth });
 //#region Sending data
 
 module.exports = async () => {
+	// Duplication handling
+	const release = await mutex.acquire();
+	// Create new session
+	const session = await mongoose.startSession();
+
 	try {
+		// Start a new session
+		session.startTransaction();
+
 		// Fetch unprocessed data
 		const newEntries = await Form.find({ isProcessed: false });
 		if (newEntries.length === 0) {
@@ -34,7 +47,7 @@ module.exports = async () => {
 
 		const message = newEntries
 			.map((entry, index) => {
-				return `Entry ${batchStart + 1 + index}:\nName: ${
+				return `Entry ${batchStart + 1 + index}->\nName: ${
 					entry.name
 				}\nPhone Number: ${entry.phone}\nEmail: ${
 					entry.email
@@ -43,7 +56,7 @@ module.exports = async () => {
 			.join('\n');
 
 		const recipientNumber = Number(RECIPIENTNUMBER);
-		await messageToWhatsapp(recipientNumber, message);
+		await messageToWhatsapp(message);
 
 		//#endregion Sending data to WhatsApp
 
@@ -65,9 +78,20 @@ module.exports = async () => {
 			}
 		);
 
+		// Commit transaction
+		await session.commitTransaction();
+
 		return console.log(responseMessage);
 	} catch (err) {
+		// Abort session
+		await session.abortTransaction();
 		return console.log(`Error while appending the data  ${err}`);
+	} finally {
+		// Ending session no matter if error or not
+		session.endSession();
+
+		// Releasing session
+		release();
 	}
 };
 

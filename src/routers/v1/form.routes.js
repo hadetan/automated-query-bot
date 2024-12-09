@@ -3,6 +3,6 @@ const idExtractor = require('../../middleware/idExtractor');
 
 const router = require('express').Router();
 
-router.post('/', idExtractor,  createFormController);
+router.post('/', idExtractor, createFormController);
 
 module.exports = router;

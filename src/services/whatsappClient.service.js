@@ -19,7 +19,7 @@ const initializeClient = async () => {
 
 	// Generating QR code for authentication
 	whatsappClient.on('qr', (qr) => {
-		console.log('Scan this QR code to log in:');
+		console.log('Scan this QR code to log in to WhatsApp:');
 		qrcode.generate(qr, { small: true });
 	});
 
@@ -62,7 +62,7 @@ const waitForClientReady = () => {
 };
 
 // Function to send WhatsApp messages
-const messageToWhatsapp = async (recipientNumber, message) => {
+const messageToWhatsapp = async (message) => {
 	try {
 		const client = await initializeClient();
 
@@ -71,7 +71,8 @@ const messageToWhatsapp = async (recipientNumber, message) => {
 
 		// WhatsApp formatted number and group id
 		// const formattedNumber = `${recipientNumber}@c.us`;
-		const formattedGroup = `${RECIPIENTGROUP}@g.us`
+
+		const formattedGroup = `${RECIPIENTGROUP}@g.us`;
 
 		// Sending message to the specified number with the message
 		await client.sendMessage(formattedGroup, message);
@@ -83,7 +84,7 @@ const messageToWhatsapp = async (recipientNumber, message) => {
 
 module.exports = {
 	messageToWhatsapp,
-	initializeClient
+	initializeClient,
 };
 
 //#endregion

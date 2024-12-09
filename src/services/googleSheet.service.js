@@ -3,7 +3,6 @@ const { RANGE, SPREADSHEET_ID } = require('../configs/index.js');
 //#region Appending on Google Sheet
 module.exports = async (sheets, batchStart, newEntries) => {
 	try {
-
 		//Logic for google sheets processing
 		const sheetData = await sheets.spreadsheets.values.get({
 			//Your spreadSheet id extracted from link in parameter
@@ -54,7 +53,7 @@ module.exports = async (sheets, batchStart, newEntries) => {
 		// 		: 0;
 
 		const rows = newEntries.map((entry, index) => [
-            // lastSerialNumber + 1 + index, //old way
+			// lastSerialNumber + 1 + index, //old way
 			batchStart + 1 + index, //Serial Number
 			entry.name,
 			entry.phone,
@@ -129,7 +128,7 @@ module.exports = async (sheets, batchStart, newEntries) => {
 			},
 		});
 
-        return newEntries;
+		return newEntries;
 	} catch (err) {
 		return console.log(
 			`Error while appending to google sheet: ${err.message}`

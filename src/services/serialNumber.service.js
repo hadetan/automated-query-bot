@@ -14,7 +14,7 @@ module.exports = async (batchSize) => {
 			},
 			{ upsert: true, new: true }
 		);
-        return counter.value - batchSize;
+		return counter.value - batchSize;
 	} catch (err) {
 		console.log(`Error accessing counter: ${err.message}`);
 		throw new Error('Failed to retrieve the serial number counter.');

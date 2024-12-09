@@ -14,12 +14,12 @@ const userSchema = mongoose.Schema({
 		required: true,
 		select: false,
 	},
-    forms: [
+	forms: [
 		{
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'form'
-		}
-	]
+			ref: 'form',
+		},
+	],
 });
 
 module.exports = mongoose.model('user', userSchema);
