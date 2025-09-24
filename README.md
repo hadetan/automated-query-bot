@@ -1,4 +1,4 @@
-# Midas Institute of Software and Technology Server
+# Automated query bot
 
 ## Description
 
